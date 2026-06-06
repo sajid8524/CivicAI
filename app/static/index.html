@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CivicAI</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">CA</div>
+          <div>
+            <strong>CivicAI</strong>
+            <span>Smart grievance resolution</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <button class="nav-button active" data-view="complaint">File Complaint</button>
+          <button class="nav-button" data-view="track">Track Complaint</button>
+          <button class="nav-button" data-view="officer">Officer Dashboard</button>
+          <button class="nav-button" data-view="transparency">Transparency</button>
+        </nav>
+        <div class="agent-flow-mini" id="agent-flow-mini"></div>
+      </aside>
+
+      <main class="main">
+        <section class="topbar">
+          <div>
+            <p class="eyebrow">Autonomous municipal workflow</p>
+            <h1 id="view-title">Citizen Complaint Portal</h1>
+          </div>
+          <div class="health" id="health-pill">Checking service</div>
+        </section>
+
+        <section class="view active" id="view-complaint">
+          <div class="grid two">
+            <form class="panel form-panel" id="complaint-form">
+              <div class="form-grid">
+                <label>
+                  Citizen name
+                  <input name="name" autocomplete="name" placeholder="Asha Kumar" required>
+                </label>
+                <label>
+                  Phone
+                  <input name="phone" autocomplete="tel" placeholder="+91 90000 00000">
+                </label>
+                <label>
+                  Email
+                  <input name="email" type="email" autocomplete="email" placeholder="citizen@example.com">
+                </label>
+                <label>
+                  Ward
+                  <select name="ward">
+                    <option>Central</option>
+                    <option>North</option>
+                    <option>South</option>
+                    <option>East</option>
+                    <option>West</option>
+                    <option>Market</option>
+                  </select>
+                </label>
+                <label class="wide">
+                  Location
+                  <input name="location" placeholder="ABC Road near Government School" required>
+                </label>
+                <label class="wide">
+                  Description
+                  <textarea name="description" rows="5" placeholder="There is a huge water leak near ABC road affecting the school entrance." required></textarea>
+                </label>
+                <label>
+                  Affected citizens
+                  <input name="affected_citizens" type="number" min="1" value="5">
+                </label>
+                <label>
+                  Evidence image
+                  <input name="image" type="file" accept="image/*">
+                </label>
+              </div>
+              <div class="preview-row">
+                <img alt="Evidence preview" id="image-preview" class="image-preview hidden">
+                <button class="primary" type="submit">Submit Complaint</button>
+              </div>
+            </form>
+
+            <div class="panel result-panel">
+              <div class="section-heading">
+                <h2>Agent Decision Trace</h2>
+                <span id="trace-status">Waiting for submission</span>
+              </div>
+              <div id="submission-result" class="empty-state">
+                The next filed complaint will show every autonomous decision made by the system.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="view-track">
+          <div class="panel">
+            <div class="track-row">
+              <input id="track-id" placeholder="CIV-20260606-ABC123">
+              <button class="primary" id="track-button">Track</button>
+            </div>
+            <div id="track-result" class="track-result empty-state">Enter a complaint ID to view live status.</div>
+          </div>
+        </section>
+
+        <section class="view" id="view-officer">
+          <div class="toolbar">
+            <button class="primary" id="refresh-complaints">Refresh</button>
+            <button id="run-monitor">Run Monitoring Agent</button>
+            <select id="status-filter">
+              <option value="">All statuses</option>
+              <option>Assigned</option>
+              <option>In Progress</option>
+              <option>Escalated</option>
+              <option>Resolved</option>
+              <option>Linked Duplicate</option>
+            </select>
+          </div>
+          <div class="panel hidden" id="monitoring-result"></div>
+          <div class="grid three" id="officer-list"></div>
+        </section>
+
+        <section class="view" id="view-transparency">
+          <div class="kpi-grid" id="kpi-grid"></div>
+          <div class="grid two dashboard-grid">
+            <div class="panel">
+              <div class="section-heading">
+                <h2>Complaint Map</h2>
+                <span>Recent tickets</span>
+              </div>
+              <div class="city-map" id="city-map"></div>
+            </div>
+            <div class="panel">
+              <div class="section-heading">
+                <h2>Department Load</h2>
+                <span>Open data</span>
+              </div>
+              <div id="dept-bars" class="bars"></div>
+            </div>
+            <div class="panel">
+              <div class="section-heading">
+                <h2>Status Mix</h2>
+                <span>Lifecycle</span>
+              </div>
+              <div id="status-bars" class="bars"></div>
+            </div>
+            <div class="panel">
+              <div class="section-heading">
+                <h2>Department Rankings</h2>
+                <span>Efficiency view</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Department</th>
+                      <th>Total</th>
+                      <th>Resolved</th>
+                      <th>Escalated</th>
+                      <th>Avg Priority</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ranking-table"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="section-heading">
+                <h2>Predictive Risk</h2>
+                <span>14-day forecast</span>
+              </div>
+              <div id="risk-list" class="insight-list"></div>
+            </div>
+            <div class="panel">
+              <div class="section-heading">
+                <h2>Resource Allocation</h2>
+                <span>Staffing agent</span>
+              </div>
+              <div id="allocation-list" class="insight-list"></div>
+            </div>
+            <div class="panel">
+              <div class="section-heading">
+                <h2>Citizen Satisfaction</h2>
+                <span>Sentiment agent</span>
+              </div>
+              <div id="satisfaction-panel"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast hidden" id="toast"></div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
