@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+import os
 import argparse
 import json
 import mimetypes
@@ -154,9 +154,11 @@ def build_server(host: str, port: int) -> ThreadingHTTPServer:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run the CivicAI local MVP server.")
-    parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", default=8080, type=int)
+    parser = argparse.ArgumentParser(description="Run CivicAI server")
+    default_host = os.getenv("HOST", "0.0.0.0")
+    default_port = int(os.getenv("PORT", "8080"))
+    parser.add_argument("--host", default=default_host)
+    parser.add_argument("--port", default=default_port, type=int)
     args = parser.parse_args()
     server = build_server(args.host, args.port)
     print(f"CivicAI running at http://{args.host}:{args.port}")
